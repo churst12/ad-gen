@@ -85,6 +85,7 @@ def obtain_bearer_token(host, path):
 
 
 def request(host, path, bearer_token, url_params=None):
+    print(path+'\n\n\n')
     """Given a bearer token, send a GET request to the API.
     Args:
         host (str): The domain host of the API.
@@ -101,7 +102,6 @@ def request(host, path, bearer_token, url_params=None):
     headers = {
         'Authorization': 'Bearer %s' % bearer_token,
     }
-
     print(u'Querying {0} ...'.format(url))
 
     response = requests.request('GET', url, headers=headers, params=url_params)
@@ -136,6 +136,17 @@ def get_business(bearer_token, business_id):
 
     return request(API_HOST, business_path, bearer_token)
 
+def get_reviews(bearer_token, business_id):
+    """Query the Business API by a business ID.
+    Args:
+        business_id (str): The ID of the business to query.
+    Returns:
+        dict: The JSON response from the request.
+    """
+    reviews_path = BUSINESS_PATH + business_id + '/reviews'
+    return request(API_HOST, reviews_path, bearer_token)
+
+
 
 def query_api(term, location):
     """Queries the API by the input values from the user.
@@ -161,7 +172,20 @@ def query_api(term, location):
     response = get_business(bearer_token, business_id)
 
     print(u'Result for business "{0}" found:'.format(business_id))
-    pprint.pprint(response, indent=2)
+    #pprint.pprint(response, indent=2)
+
+    reviews = get_reviews(bearer_token, business_id)
+    string_reviews = json.dumps(reviews)
+    string_x = string_reviews.split()
+    index = string_x.index('\"text\":')
+    end_index = string_x.index('\"user\":')
+    string_y = "" 
+    for x in range(index+1, end_index):
+        string_y = string_y + string_x[x] + " "
+        
+    print(string_y)
+
+    #pprint.pprint(reviews, indent=2)
 
 
 def main():
