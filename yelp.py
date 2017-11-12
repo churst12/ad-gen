@@ -125,7 +125,6 @@ def search(bearer_token, term, location):
     }
     return request(API_HOST, SEARCH_PATH, bearer_token, url_params=url_params)
 
-
 def get_business(bearer_token, business_id):
     """Query the Business API by a business ID.
     Args:
